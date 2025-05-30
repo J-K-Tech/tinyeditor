@@ -1,0 +1,317 @@
+[gd_scene load_steps=26 format=3 uid="uid://p2011c25dwex"]
+
+[ext_resource type="Texture2D" uid="uid://dhtvdvu6xs2ha" path="res://save.png" id="1_4s0cy"]
+[ext_resource type="FontFile" uid="uid://c2fl8ip6ebuq0" path="res://ModernDOS8x8.ttf" id="1_gbsbp"]
+[ext_resource type="Texture2D" uid="uid://d0uaqsruo6ikd" path="res://load.png" id="2_1ys5w"]
+[ext_resource type="Texture2D" uid="uid://b8uw0uadcwblf" path="res://close.png" id="3_gbsbp"]
+[ext_resource type="Texture2D" uid="uid://bitm7ll7jxyps" path="res://filter.png" id="3_t27w5"]
+[ext_resource type="Texture2D" uid="uid://d3nmx33vj1frl" path="res://find.png" id="4_t27w5"]
+[ext_resource type="Texture2D" uid="uid://cpbider27h4gx" path="res://replace.png" id="5_k4288"]
+[ext_resource type="Script" uid="uid://b3v4g4ubme5ka" path="res://syntaxregex.gd" id="6_1ys5w"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gbsbp"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.1, 0.1, 0.1, 0.3)
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t27w5"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(1, 1, 1, 0)
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0, 1, 1)
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k4288"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.313726, 0.313726, 0.313726, 1)
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8yjtx"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0, 0, 0, 1)
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3btpq"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0, 0, 0, 0.6)
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kxsle"]
+bg_color = Color(0, 0, 0.0627451, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2qtvm"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lmvvn"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hcdi5"]
+bg_color = Color(0.564706, 0.564706, 0.564706, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wksbx"]
+bg_color = Color(0.501961, 0.501961, 0.501961, 1)
+draw_center = false
+border_color = Color(1, 0, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3v1c7"]
+bg_color = Color(0.188235, 0.188235, 0.188235, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qd6k7"]
+bg_color = Color(0.313726, 0.313726, 0.313726, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kwc7g"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Theme" id="Theme_1ys5w"]
+default_font = ExtResource("1_gbsbp")
+default_font_size = 16
+Button/colors/font_disabled_color = Color(0.875, 0.875, 0.875, 0.5)
+Button/colors/font_focus_color = Color(0.95, 0.95, 0.95, 1)
+Button/colors/font_hover_color = Color(0.95, 0.95, 0.95, 1)
+Button/colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+Button/colors/font_outline_color = Color(0, 0, 0, 1)
+Button/colors/font_pressed_color = Color(1, 1, 1, 1)
+Button/colors/icon_disabled_color = Color(1, 1, 1, 0.4)
+Button/colors/icon_hover_color = Color(0, 1, 1, 1)
+Button/colors/icon_hover_pressed_color = Color(0, 1, 1, 1)
+Button/colors/icon_normal_color = Color(1, 1, 1, 1)
+Button/constants/align_to_largest_stylebox = 0
+Button/constants/h_separation = 4
+Button/constants/icon_max_width = 0
+Button/constants/outline_size = 0
+Button/styles/disabled = SubResource("StyleBoxFlat_gbsbp")
+Button/styles/focus = SubResource("StyleBoxFlat_t27w5")
+Button/styles/hover = SubResource("StyleBoxFlat_k4288")
+Button/styles/normal = SubResource("StyleBoxFlat_8yjtx")
+Button/styles/pressed = SubResource("StyleBoxFlat_3btpq")
+CodeEdit/colors/background_color = Color(0, 0, 0, 1)
+CodeEdit/colors/current_line_color = Color(0.439216, 0.12549, 0.14902, 0.52549)
+CodeEdit/colors/font_color = Color(1, 1, 1, 1)
+CodeEdit/colors/line_number_color = Color(1, 0.627451, 0.627451, 1)
+FileDialog/icons/reload = ExtResource("5_k4288")
+FileDialog/icons/toggle_filename_filter = ExtResource("3_t27w5")
+FileDialog/styles/panel = SubResource("StyleBoxFlat_kxsle")
+LineEdit/styles/focus = SubResource("StyleBoxFlat_2qtvm")
+LineEdit/styles/normal = SubResource("StyleBoxFlat_lmvvn")
+LineEdit/styles/read_only = SubResource("StyleBoxFlat_hcdi5")
+Tree/colors/font_selected_color = Color(1, 1, 0, 1)
+Tree/styles/focus = SubResource("StyleBoxFlat_wksbx")
+Tree/styles/hovered = SubResource("StyleBoxFlat_3v1c7")
+Tree/styles/selected_focus = SubResource("StyleBoxFlat_qd6k7")
+Window/icons/close = ExtResource("3_gbsbp")
+Window/icons/close_pressed = ExtResource("3_gbsbp")
+Window/styles/embedded_border = SubResource("StyleBoxFlat_lmvvn")
+Window/styles/embedded_unfocused_border = SubResource("StyleBoxFlat_kwc7g")
+
+[sub_resource type="GDScript" id="GDScript_t27w5"]
+resource_name = "control"
+script/source = "extends Control
+var filename=\"\"
+
+func _ready() -> void:
+	$HBoxContainer/load.connect(\"button_up\",open)
+	$HBoxContainer/close.connect(\"button_up\",close)
+	$HBoxContainer/save.connect('button_up',save)
+	$HBoxContainer/find.connect(\"button_up\",find)
+	$HBoxContainer/replace.connect(\"button_up\",replace)
+	$FileDialog.access=2
+	$FileDialog.filters=[\"*.tmk ; tiny script files\"]
+	$FileDialog.connect(\"file_selected\",openfile)
+	
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed(\"save\"):savefile()
+	elif event.is_action_pressed(\"save as\"):save()
+	elif event.is_action_pressed(\"open\"):open()
+	elif event.is_action_pressed(\"new\"):close()
+	elif event.is_action_pressed(\"find\"):find()
+	elif event.is_action_pressed(\"replace\"):replace()
+func replace():
+	pass
+	
+var currfind=0
+func find():
+	var e:String=	$CodeEdit.text
+	e
+	$CodeEdit.set_line_as_center_visible()
+	pass
+func save():
+	if !$FileDialog.visible:
+		$FileDialog.file_mode=FileDialog.FILE_MODE_SAVE_FILE
+		$FileDialog.popup()
+func savefile():
+	if filename!=\"\":
+		var file= FileAccess.open(filename,FileAccess.WRITE)
+		file.store_line($CodeEdit.text)
+	else:
+		save()
+	
+func open():
+	if !$FileDialog.visible:
+		$FileDialog.file_mode=FileDialog.FILE_MODE_OPEN_FILE
+		$FileDialog.popup_centered()
+func openfile(name:String):
+	filename=name
+	$Label.text=name.get_slice(\"/\",name.count(\"/\"))
+	var file:FileAccess
+	if $FileDialog.file_mode==FileDialog.FILE_MODE_OPEN_FILE:
+		file= FileAccess.open(name,FileAccess.READ)
+		$CodeEdit.text =file.get_as_text()
+		print($CodeEdit.text)
+	else:
+		file= FileAccess.open(name,FileAccess.WRITE)
+		file.store_line($CodeEdit.text)
+		
+	file.close()
+func close():
+	filename=\"\"
+	$CodeEdit.text=\"\"
+	$Label.text=\"untitled\"
+"
+
+[sub_resource type="SyntaxHighlighter" id="SyntaxHighlighter_1ys5w"]
+script = ExtResource("6_1ys5w")
+metadata/_custom_type_script = "uid://b3v4g4ubme5ka"
+
+[sub_resource type="GDScript" id="GDScript_gbsbp"]
+resource_name = "title"
+script/source = "extends Label
+
+func update():
+	if text.length()>30:
+		text.erase(27,text.length()-30)
+		text+=\"...\"
+"
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_1ys5w")
+script = SubResource("GDScript_t27w5")
+
+[node name="CodeEdit" type="CodeEdit" parent="."]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 25.0
+offset_right = 635.0
+offset_bottom = 475.0
+syntax_highlighter = SubResource("SyntaxHighlighter_1ys5w")
+highlight_all_occurrences = true
+highlight_current_line = true
+symbol_lookup_on_click = true
+symbol_tooltip_on_hover = true
+line_folding = true
+gutters_draw_line_numbers = true
+delimiter_strings = Array[String]([])
+code_completion_enabled = true
+indent_automatic_prefixes = Array[String]([";"])
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 5.0
+offset_right = 635.0
+offset_bottom = 25.0
+alignment = 2
+
+[node name="save" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("1_4s0cy")
+
+[node name="load" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("2_1ys5w")
+
+[node name="close" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("3_gbsbp")
+
+[node name="find" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("4_t27w5")
+
+[node name="replace" type="Button" parent="HBoxContainer"]
+visible = false
+layout_mode = 2
+icon = ExtResource("5_k4288")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 133.0
+offset_bottom = 21.0
+theme_override_font_sizes/font_size = 32
+text = "untitled"
+script = SubResource("GDScript_gbsbp")
+
+[node name="FileDialog" type="FileDialog" parent="."]
+position = Vector2i(0, 36)
+
+[node name="find" type="Window" parent="."]
+title = "find"
+position = Vector2i(0, 36)
+size = Vector2i(480, 60)
+
+[node name="text" type="LineEdit" parent="find"]
+offset_left = 21.0
+offset_top = 11.0
+offset_right = 465.0
+offset_bottom = 29.0
+theme_override_font_sizes/font_size = 16
+placeholder_text = "find text"
+
+[node name="cancel" type="Button" parent="find"]
+offset_left = 21.0
+offset_top = 36.0
+offset_right = 77.0
+offset_bottom = 52.0
+text = "cancel"
+
+[node name="next" type="Button" parent="find"]
+offset_left = 424.0
+offset_top = 38.0
+offset_right = 464.0
+offset_bottom = 54.0
+text = "next"
+
+[node name="Button" type="Button" parent="find"]
+offset_left = 348.0
+offset_top = 38.0
+offset_right = 420.0
+offset_bottom = 54.0
+text = "previous"
