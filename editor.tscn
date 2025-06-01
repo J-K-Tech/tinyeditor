@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://p2011c25dwex"]
+[gd_scene load_steps=31 format=3 uid="uid://p2011c25dwex"]
 
 [ext_resource type="Texture2D" uid="uid://dhtvdvu6xs2ha" path="res://save.png" id="1_4s0cy"]
 [ext_resource type="FontFile" uid="uid://c2fl8ip6ebuq0" path="res://ModernDOS8x8.ttf" id="1_gbsbp"]
@@ -141,6 +141,7 @@ script/source = "extends Control
 var filename=\"\"
 
 func _ready() -> void:
+	get_tree().get
 	$HBoxContainer/load.connect(\"button_up\",open)
 	$HBoxContainer/close.connect(\"button_up\",close)
 	$HBoxContainer/save.connect('button_up',save)
@@ -149,7 +150,8 @@ func _ready() -> void:
 	$FileDialog.access=2
 	$FileDialog.filters=[\"*.tmk ; tiny script files\"]
 	$FileDialog.connect(\"file_selected\",openfile)
-	
+	$find/cancel.connect(\"button_up\",cancelf)
+	$find/text.connect(\"text_changed\",indexing)
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed(\"save\"):savefile()
 	elif event.is_action_pressed(\"save as\"):save()
@@ -159,17 +161,36 @@ func _input(event: InputEvent) -> void:
 	elif event.is_action_pressed(\"replace\"):replace()
 func replace():
 	pass
+var positions=[]
+var findpos=0
+func indexing(str):
+	positions.clear()
+	findpos=0
+	$CodeEdit.text
+	var r=RegEx.new()
+	RegExMatch
+	r.compile($find/text.text)
+	var lines=$CodeEdit.text.split(\"\\n\")
+	var y=0
 	
-var currfind=0
+	for i in lines:
+		var idx=r.search_all($CodeEdit.text)
+		for h in idx:
+			positions.append([y,h.get_start()])
+		y+=1
+	$find/Label.text=str(findpos)+\" / \"+str()
+func findnext():
+	pass
 func find():
-	var e:String=	$CodeEdit.text
-	e
-	$CodeEdit.set_line_as_center_visible()
+	$find.popup_centered()
+	pass
+func cancelf():
+	$find.hide()
 	pass
 func save():
 	if !$FileDialog.visible:
 		$FileDialog.file_mode=FileDialog.FILE_MODE_SAVE_FILE
-		$FileDialog.popup()
+		$FileDialog.popup_centered()
 func savefile():
 	if filename!=\"\":
 		var file= FileAccess.open(filename,FileAccess.WRITE)
@@ -181,6 +202,14 @@ func open():
 	if !$FileDialog.visible:
 		$FileDialog.file_mode=FileDialog.FILE_MODE_OPEN_FILE
 		$FileDialog.popup_centered()
+func autoopen(name:String):
+	filename=name
+	$Label.text=name.get_slice(\"/\",name.count(\"/\"))
+	var file:FileAccess
+	file= FileAccess.open(name,FileAccess.READ)
+	$CodeEdit.text =file.get_as_text()
+	print($CodeEdit.text)
+	pass
 func openfile(name:String):
 	filename=name
 	$Label.text=name.get_slice(\"/\",name.count(\"/\"))
@@ -204,6 +233,58 @@ func close():
 script = ExtResource("6_1ys5w")
 metadata/_custom_type_script = "uid://b3v4g4ubme5ka"
 
+[sub_resource type="GDScript" id="GDScript_8yjtx"]
+resource_name = "editorsize"
+script/source = "extends CodeEdit
+
+const sizes=[8,16,24,32,40,48,56,64]
+var fsize=1
+var maxsise=sizes.size()-1
+func _process(delta: float) -> void:
+	
+	grab_focus()
+func _ready() -> void:
+	var file=FileAccess.get_file_as_string(\".tiny.config\")
+	if file!=\"\":
+		var data=file.split(\"\\n\")
+		fsize=int(data[0])
+		get_parent().autoopen(data[1])
+		add_theme_font_size_override(\"font_size\",sizes[fsize])
+
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventKey:if event.ctrl_pressed:
+		if event.is_released():
+			match event.keycode:
+				KEY_EQUAL:
+					if fsize!=maxsise:fsize+=1
+					add_theme_font_size_override(\"font_size\",sizes[fsize])
+				KEY_MINUS:
+					if fsize!=0:fsize-=1
+					add_theme_font_size_override(\"font_size\",sizes[fsize])
+				KEY_Q:
+					get_tree().quit()
+				KEY_SPACE:
+					if get_window().mode==Window.MODE_MAXIMIZED:
+						get_window().mode=Window.MODE_WINDOWED
+					else:
+						get_window().mode=Window.MODE_MAXIMIZED
+				KEY_K:
+					insert_text_at_caret(\"🔑\")
+		if event.keycode in [KEY_C, KEY_V,KEY_Z,KEY_Y,
+		KEY_A,KEY_X,KEY_UP,KEY_DOWN,KEY_LEFT,KEY_RIGHT,
+		KEY_SHIFT,KEY_DELETE,KEY_BACKSPACE
+		]:
+			return
+		else:
+			get_viewport().set_input_as_handled()
+			return
+
+func _exit_tree() -> void:
+	var file=FileAccess.open(\".tiny.config\",FileAccess.WRITE)
+	file.store_string(str(fsize)+\"\\n\"+get_parent().filename)
+	file.close()
+"
+
 [sub_resource type="GDScript" id="GDScript_gbsbp"]
 resource_name = "title"
 script/source = "extends Label
@@ -214,11 +295,81 @@ func update():
 		text+=\"...\"
 "
 
+[sub_resource type="GDScript" id="GDScript_k4288"]
+resource_name = "titlebar"
+script/source = "extends Control
+var dragging:=false
+var prevpos=Vector2i(0,0)
+var prevmode=0
+var wasminimized:=false
+func _ready() -> void:
+	$exit.connect(\"button_up\",get_tree().quit)
+	$maximize.connect(\"button_up\",func():
+		if get_window().mode!=Window.MODE_MAXIMIZED:
+			get_window().mode=Window.MODE_MAXIMIZED
+		else:
+			get_window().mode=Window.MODE_WINDOWED
+		)
+	$minimize.connect(\"button_up\",func ():
+		prevmode=get_window().mode
+		get_window().mode=Window.MODE_MINIMIZED
+		RenderingServer.force_draw()
+		wasminimized=true
+		)
+	get_window().connect(\"focus_entered\",func():
+		if wasminimized:
+			get_window().mode=prevmode
+			wasminimized=false
+		RenderingServer.force_draw()
+		
+		)
+
+
+
+func _input(event: InputEvent) -> void:
+	if (event is InputEventMouseButton):
+		if event.button_index==1&&(
+			get_global_mouse_position().x<640&&
+			get_global_mouse_position().y<26
+		):
+			if dragging==false:
+				prevpos=Vector2i(get_viewport().get_mouse_position())
+
+			dragging=event.pressed
+		if event.double_click:
+			if get_window().mode!=Window.MODE_MAXIMIZED:
+				get_window().mode=Window.MODE_MAXIMIZED
+			else:
+				get_window().mode=Window.MODE_WINDOWED
+func _process(delta: float) -> void:
+	
+	if dragging:
+		var pos:=Vector2i(get_viewport().get_mouse_position())
+		get_window().position+=pos-prevpos
+	
+"
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mcmho"]
+bg_color = Color(1, 0, 1, 1)
+skew = Vector2(0.4, 0)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_acw8i"]
+bg_color = Color(1, 1, 0, 1)
+skew = Vector2(0.4, 0)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3b0jk"]
+bg_color = Color(1, 0, 0, 1)
+skew = Vector2(0.4, 0)
+anti_aliasing = false
+
 [node name="Control" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = 26.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_1ys5w")
@@ -229,7 +380,7 @@ layout_mode = 0
 offset_left = 5.0
 offset_top = 25.0
 offset_right = 635.0
-offset_bottom = 475.0
+offset_bottom = 449.0
 syntax_highlighter = SubResource("SyntaxHighlighter_1ys5w")
 highlight_all_occurrences = true
 highlight_current_line = true
@@ -240,6 +391,7 @@ gutters_draw_line_numbers = true
 delimiter_strings = Array[String]([])
 code_completion_enabled = true
 indent_automatic_prefixes = Array[String]([";"])
+script = SubResource("GDScript_8yjtx")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 0
@@ -286,6 +438,7 @@ position = Vector2i(0, 36)
 title = "find"
 position = Vector2i(0, 36)
 size = Vector2i(480, 60)
+visible = false
 
 [node name="text" type="LineEdit" parent="find"]
 offset_left = 21.0
@@ -315,3 +468,66 @@ offset_top = 38.0
 offset_right = 420.0
 offset_bottom = 54.0
 text = "previous"
+
+[node name="Label" type="Label" parent="find"]
+offset_left = 90.0
+offset_top = 40.0
+offset_right = 146.0
+offset_bottom = 48.0
+text = "0 / 0"
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_top = -26.0
+offset_right = 640.0
+script = SubResource("GDScript_k4288")
+
+[node name="ColorRect" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_right = 640.0
+offset_bottom = 26.0
+color = Color(0, 0, 0, 1)
+
+[node name="Label" type="Label" parent="Control"]
+layout_mode = 0
+offset_left = 255.0
+offset_top = 5.0
+offset_right = 383.0
+offset_bottom = 21.0
+mouse_filter = 1
+theme_override_font_sizes/font_size = 32
+text = "tinyedit"
+
+[node name="minimize" type="Button" parent="Control"]
+layout_mode = 0
+offset_left = 394.0
+offset_top = 8.0
+offset_right = 418.0
+offset_bottom = 17.0
+theme_override_styles/focus = SubResource("StyleBoxFlat_mcmho")
+theme_override_styles/hover = SubResource("StyleBoxFlat_mcmho")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_mcmho")
+theme_override_styles/normal = SubResource("StyleBoxFlat_mcmho")
+
+[node name="maximize" type="Button" parent="Control"]
+layout_mode = 0
+offset_left = 423.0
+offset_top = 8.0
+offset_right = 447.0
+offset_bottom = 17.0
+theme_override_styles/focus = SubResource("StyleBoxFlat_acw8i")
+theme_override_styles/hover = SubResource("StyleBoxFlat_acw8i")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_acw8i")
+theme_override_styles/normal = SubResource("StyleBoxFlat_acw8i")
+
+[node name="exit" type="Button" parent="Control"]
+layout_mode = 0
+offset_left = 452.0
+offset_top = 8.0
+offset_right = 476.0
+offset_bottom = 17.0
+theme_override_styles/focus = SubResource("StyleBoxFlat_3b0jk")
+theme_override_styles/hover = SubResource("StyleBoxFlat_3b0jk")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_3b0jk")
+theme_override_styles/normal = SubResource("StyleBoxFlat_3b0jk")
